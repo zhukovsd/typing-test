@@ -16,14 +16,17 @@ export default class WordsContainer {
         //     this.testInputKeypress(event);
         // });
 
+        // refresh words/characters UI
         this.testui.wordsInputField.element.on('input', event => {
             this.testInputInput(event);
         });
 
+        // calculate statistics
         this.testui.wordsInputField.element.keypress(event => {
             this.testInputKeypress(event);
         });
 
+        // calculate caret position
         this.testui.wordsInputField.element.keydown(event => {
             this.testInputKeydown(event);
         });
@@ -139,17 +142,19 @@ export default class WordsContainer {
     testInputInput(event) {
         let value = this.testui.wordsInputField.element.val();
 
-        // console.log(`input event, current word = ${this.currentWord}, input value = ${value}`);
+        console.log(`input event, current word = ${this.currentWord}, input value = ${value}`);
 
         if (value.charAt(value.length - 1) === ' ') {
             value = value.slice(0, value.length - 1);
 
-            if (value === this.currentWord) {
+            let isCorrectWord = value === this.currentWord;
+            if (isCorrectWord) {
                 this.currentWordElement.addClass('task-word-correct');
             } else {
                 this.currentWordElement.addClass('task-word-incorrect');
             }
 
+            this.testui.statistics.countWord(isCorrectWord, this.currentWord.length);
             this.nextWord();
             this.testui.wordsInputField.element.val('');
         } else {
@@ -165,13 +170,16 @@ export default class WordsContainer {
         console.log('keypress, text = ' + text, 'caret position = ' + caretPosition);
 
         const expectedChar = (caretPosition < text.length) ? text.charAt(caretPosition) : ' ';
-        console.log(`pressed = ${event.key}, expected = ${expectedChar}`);
+        // console.log(`pressed = ${event.key}, expected = ${expectedChar}`);
 
-        if (event.key === expectedChar) {
-             console.log('correct char')
-        } else {
-             console.log('incorrect char');
-        }
+        let isCorrect = event.key === expectedChar;
+        // if (isCorrect) {
+        //      console.log('correct char')
+        // } else {
+        //      console.log('incorrect char');
+        // }
+
+        this.testui.statistics.countCharacter(isCorrect);
     }
 
     // calculate caret position

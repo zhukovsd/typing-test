@@ -44,11 +44,11 @@
 
 @keyframes pointer-animation {
     from {
-        transform: rotate(140deg)
+        transform: rotate(95deg)
     }
 
     to {
-        transform: rotate(150deg)
+        transform: rotate(105deg)
     }
 }
 
