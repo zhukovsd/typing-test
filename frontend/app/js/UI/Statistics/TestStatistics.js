@@ -22,6 +22,14 @@ export default class TestStatistics {
         this.correctWordsCount = 0;
         this.correctUniqueCharactersCount = 0;
         this.typosCount = 0;
+
+        this.refreshStatisticsIntervalHandle = 0;
+    }
+
+    setCpm(value) {
+        this.cpm = value;
+        this.elementCpm.text(Math.trunc(this.cpm));
+        this.speedometer.setValue(this.cpm);
     }
 
     countCharacter(isCorrect) {
@@ -29,13 +37,18 @@ export default class TestStatistics {
             const testDurationInMinutes = this.testUI.getTestDurationInMinutes();
 
             if (testDurationInMinutes > 0) {
-                this.cpm = ++this.correctCharactersCount / testDurationInMinutes;
-                this.elementCpm.text(Math.trunc(this.cpm));
+                this.setCpm(++this.correctCharactersCount / testDurationInMinutes);
 
                 console.log('cpm = ' + this.cpm);
             }
         } else {
             this.elementTyposCount.text(++this.typosCount);
+        }
+
+        if (this.refreshStatisticsIntervalHandle === 0) {
+            this.refreshStatisticsIntervalHandle = setInterval(() => {
+                this.refreshStatisticsInterval();
+            }, 50);
         }
     }
 
@@ -51,10 +64,14 @@ export default class TestStatistics {
             this.wpm = this.correctWordsCount / testDurationInMinutes;
             this.elementWpm.text(Math.trunc(this.wpm));
 
-            this.cpm = this.correctUniqueCharactersCount / testDurationInMinutes;
-            this.elementCpm.text(Math.trunc(this.cpm));
+            this.setCpm(this.correctUniqueCharactersCount / testDurationInMinutes);
 
             console.log('cpm corrected to ' + this.cpm);
         }
+    }
+
+    refreshStatisticsInterval() {
+        this.setCpm(this.correctCharactersCount / this.testUI.getTestDurationInMinutes());
+        // console.log('cpm on timer = ' + this.cpm);
     }
 }

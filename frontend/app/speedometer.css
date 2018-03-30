@@ -34,12 +34,12 @@
     border-width: 90px 0 0 3px;
     border-color: white white;
 
-    animation: 0.5s alternate infinite ease-in-out;
+    animation: 0.1s alternate infinite ease-out;
 
-    transform: rotate(145deg);
+    transform: rotate(96.5deg);
     transform-origin: 0 0;
 
-    animation-name: pointer-animation;
+    /* animation-name: pointer-animation; */
 }
 
 @keyframes pointer-animation {
@@ -48,7 +48,7 @@
     }
 
     to {
-        transform: rotate(105deg)
+        transform: rotate(100deg)
     }
 }
 

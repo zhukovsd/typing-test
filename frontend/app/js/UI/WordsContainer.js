@@ -142,7 +142,7 @@ export default class WordsContainer {
     testInputInput(event) {
         let value = this.testui.wordsInputField.element.val();
 
-        console.log(`input event, current word = ${this.currentWord}, input value = ${value}`);
+        // console.log(`input event, current word = ${this.currentWord}, input value = ${value}`);
 
         if (value.charAt(value.length - 1) === ' ') {
             value = value.slice(0, value.length - 1);
@@ -167,7 +167,7 @@ export default class WordsContainer {
         let text = this.currentWord;
         let caretPosition = $(this.testui.wordsInputField.element).caret('pos');
 
-        console.log('keypress, text = ' + text, 'caret position = ' + caretPosition);
+        // console.log('keypress, text = ' + text, 'caret position = ' + caretPosition);
 
         const expectedChar = (caretPosition < text.length) ? text.charAt(caretPosition) : ' ';
         // console.log(`pressed = ${event.key}, expected = ${expectedChar}`);
@@ -208,7 +208,7 @@ export default class WordsContainer {
             caretPosition++;
         }
 
-        console.log('keydown, text length = ' + textLength + ', caret position = ' + caretPosition);
+        // console.log('keydown, text length = ' + textLength + ', caret position = ' + caretPosition);
 
         if (caretPosition === textLength) {
             this.currentWordElement.addClass('underline');
