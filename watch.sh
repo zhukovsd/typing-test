@@ -2,7 +2,7 @@
 
 # browser-sync start --server build --files build/* --port 3000 --reload-delay 100 &
 
-ARTIFACT_PATH=./out/artifacts/typing_test_war_exploded/
+ARTIFACT_PATH=./target/typing-test-1.0-SNAPSHOT/
 
 # watch Javascript files
 sh ./frontend/watchify-artifact.sh &

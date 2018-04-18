@@ -3,4 +3,4 @@
 # set current directory to ./frontend explicitly, because this script gets executed from a root project dir
 cd "${0%/*}"
 
-./node_modules/.bin/pug app -o ./../out/artifacts/typing_test_war_exploded/ -P --watch
+./node_modules/.bin/pug app -o ./../target/typing-test-1.0-SNAPSHOT/ -P --watch
