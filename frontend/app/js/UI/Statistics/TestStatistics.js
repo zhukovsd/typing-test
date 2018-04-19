@@ -9,7 +9,7 @@ export default class TestStatistics {
         this.elementWpm = $('#test-stats-value-wpm');
         this.elementTyposCount = $('#test-stats-value-typos');
 
-        this.speedometer = new Speedometer($('.speedometer'));
+        this.speedometer = new Speedometer($('.test-stats .speedometer'));
 
         this.cpm = 0;
         this.wpm = 0;
@@ -73,5 +73,12 @@ export default class TestStatistics {
     refreshStatisticsInterval() {
         this.setCpm(this.correctCharactersCount / this.testUI.getTestDurationInMinutes());
         // console.log('cpm on timer = ' + this.cpm);
+    }
+
+    stopRefreshingStatistics() {
+        if (this.refreshStatisticsIntervalHandle !== 0) {
+            clearInterval(this.refreshStatisticsIntervalHandle);
+            this.refreshStatisticsIntervalHandle = 0;
+        }
     }
 }

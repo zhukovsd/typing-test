@@ -1,6 +1,10 @@
 import $ from "jquery";
 
 export default class Speedometer {
+    static get DEFAULT_ANIMATION_DURATION() {
+        return 200;
+    };
+
     constructor(element) {
         this.element = element;
         this.elementPointer = this.element.find('.pointer');
@@ -9,8 +13,9 @@ export default class Speedometer {
         this.minPointerAngle = 96.5;
         this.maxPointerAngle = 263.5;
 
+        this.currentValue = 0;
         this.currentGearIndex = 0;
-        this.currentPointerAngle = 145; // this.minPointerAngle;
+        this.currentPointerAngle = this.minPointerAngle;
 
         this.gears = [
             // {from: 0, to: 100},
@@ -30,6 +35,8 @@ export default class Speedometer {
             {from: 790, to: 900}
         ];
 
+        // this.setValue(100);
+
         // this.elementPointer.css('transform', 'rotate(263.5deg)');
         // this.elementPointer.transform()
     }
@@ -40,7 +47,7 @@ export default class Speedometer {
             * pointerAnglePercentage;
     }
 
-    setValue(value) {
+    setValue(value, animationDuration, animationStepCallback) {
         let currentGear = this.gears[this.currentGearIndex];
 
         if ((value < currentGear.from) || (value > currentGear.to)) {
@@ -49,8 +56,7 @@ export default class Speedometer {
 
         //if (false) {
             // transform: rotate(105deg)
-            const angle = this.calculatePointerAngle(value, currentGear.from, currentGear.to);
-            this.animatePointer(angle);
+            this.animatePointer(value, animationDuration, animationStepCallback);
         //}
     }
 
@@ -83,35 +89,52 @@ export default class Speedometer {
         }
     }
 
-    static calculateAnimationDuration(from, to) {
-        const degreesPerMillisecond = 0.1;
-        let duration = Math.abs(to - from) / degreesPerMillisecond;
+    // static calculateAnimationDuration(from, to) {
+    //     const degreesPerMillisecond = 0.1;
+    //     let duration = Math.abs(to - from) / degreesPerMillisecond;
+    //
+    //     console.log('duration = ' + duration);
+    //     return duration;
+    //     // return 1000;
+    // }
 
-        // console.log('duration = ' + duration);
-        return duration;
-    }
+    animatePointer(value, animationDuration, animationStepCallback) {
+        let currentGear = this.gears[this.currentGearIndex];
+        const angle = this.calculatePointerAngle(value, currentGear.from, currentGear.to);
 
-    animatePointer(angle) {
-        const speedometer = this;
+        if (!animationDuration) animationDuration = Speedometer.DEFAULT_ANIMATION_DURATION;
 
         // console.lo
 
+        const speedometer = this;
+
         // we use a pseudo object for the animation
         // (starts from `0` to `angle`), you can name it as you want
-        $({deg: this.currentPointerAngle}).animate({deg: angle}, {
+        $({deg: this.currentPointerAngle, value: this.currentValue}).animate({deg: angle, value: value}, {
             // duration: Speedometer.calculateAnimationDuration(this.currentPointerAngle, angle),
-            duration: 200,
-            step: function (stepValue) {
-                // console.log('step ' + stepValue);
+            duration: animationDuration,
+            step: function (stepValue, currentStep) {
+                // console.log('step ' + stepValue + ', ' + JSON.stringify(currentStep));
 
-                speedometer.currentPointerAngle = stepValue;
+                let currentAngle = currentStep.elem.deg;
+
+                // ?
+                if (currentAngle > speedometer.maxPointerAngle) {
+                    currentAngle = speedometer.maxPointerAngle;
+                }
+
+                speedometer.currentPointerAngle = currentAngle;
 
                 // in the step-callback (that is fired each step of the animation),
                 // you can use the `now p`aramter which contains the current
                 // animation-position (`0` up to `angle`)
                 speedometer.elementPointer.css({
-                    transform: 'rotate(' + stepValue + 'deg)'
+                    transform: 'rotate(' + currentAngle + 'deg)'
                 });
+
+                if (animationStepCallback) {
+                    animationStepCallback(currentStep.elem.value);
+                }
             }
         });
     }

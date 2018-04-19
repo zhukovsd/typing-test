@@ -1,4 +1,23 @@
 doctype html
+
+mixin space
+    | !{' '}
+
+mixin speedometer
+    div.speedometer
+        div.center
+            .bars.center
+                - var n = 0;
+                while n++ < 9
+                    div.center.bar
+                //div.center.bar
+
+            .nums.center
+                - var n = 0;
+                while n++ < 5
+                    div.center.num= n * 20
+        div.pointer
+
 html(lang="en")
     head
         meta(charset="UTF-8")
@@ -15,7 +34,6 @@ html(lang="en")
             h1 Typing test
 
             div.page-description Challenge your typing skills in 1 minute test. Have fun!
-
 
             div.test-ui
                 div.words-container
@@ -35,26 +53,42 @@ html(lang="en")
 
                         - n++;
 
+                div.test-results-container(style="display: none;")
+                    div.test-results
+                        | Your score is
+                        +space
+                        span#test-results-value-cpm 123
+                        +space
+                        span.test-stats-value-description CPM
+                        +space
+                        | (
+                        span#test-results-value-wpm 50
+                        +space
+                        span.test-stats-value-description WPM
+                        | )
+
+                    div.test-results
+                        | You type faster than
+                        +space
+                        span#test-results-value-percentage 0
+                        | % of other players!
+
+                    +speedometer
+
+                    div.test-results Have a break or play again
+
                 div.test-ui-footer
                     div.test-timer 1:00
                     input.test-ui-input(placeholder="type here")
-                    div.restart-container
-                        div.restart Restart
+
+                    div.vert-centered-container.new-test-container
+                        a.vert-centered-text.new-test(href="/#", style="display: none;") Start a new test
+
+                    div.vert-centered-container.restart-container
+                        div.vert-centered-text.restart Restart
 
             div.test-stats
-                div.speedometer
-                    div.center
-                        #bars.center
-                            - var n = 0;
-                            while n++ < 9
-                                div.center.bar
-                            //div.center.bar
-
-                        #nums.center
-                            - var n = 0;
-                            while n++ < 5
-                                div.center.num= n*10
-                    div.pointer
+                +speedometer
 
                 div.test-stats-footer
                     div.test-stats-value-description(title="test") CPM
