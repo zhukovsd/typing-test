@@ -37,7 +37,7 @@ export default class WordsContainer {
 
         // return $('<div></div>').addClass('task-word').text(value);
         const span = $('<span></span>').addClass('plain-word').text(value);
-        return $('<div></div>').addClass('task-word').addClass('underline').append(span);
+        return $('<div></div>').addClass('task-word')/*.addClass('underline')*/.append(span);
     }
 
     populate() {
@@ -67,6 +67,7 @@ export default class WordsContainer {
     setToFirstWord() {
         this.currentWordIndex = 0;
         this.initCurrentWord();
+        this.setCaretPosition(0, 0);
 
         return this;
     }
@@ -210,13 +211,36 @@ export default class WordsContainer {
 
         // console.log('keydown, text length = ' + textLength + ', caret position = ' + caretPosition);
 
-        if (caretPosition === textLength) {
+        this.setCaretPosition(caretPosition, textLength);
+
+        // if (caretPosition === textLength) {
+        //     this.currentWordElement.addClass('underline');
+        //     this.currentWordCharElements.removeClass('underline');
+        // } else {
+        //     this.currentWordElement.removeClass('underline');
+        //     this.currentWordCharElements.removeClass('underline');
+        //     $(this.currentWordCharElements[caretPosition]).addClass('underline');
+        // }
+    }
+
+    setCaretPosition(value, textLength) {
+        if (value === textLength) {
             this.currentWordElement.addClass('underline');
             this.currentWordCharElements.removeClass('underline');
         } else {
             this.currentWordElement.removeClass('underline');
             this.currentWordCharElements.removeClass('underline');
-            $(this.currentWordCharElements[caretPosition]).addClass('underline');
+            $(this.currentWordCharElements[value]).addClass('underline');
         }
+    }
+
+    clear() {
+        this.element.find('.task-word').remove();
+
+        return this;
+    }
+
+    reset() {
+        return this.clear().populate().setToFirstWord();
     }
 }

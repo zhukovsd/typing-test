@@ -113,8 +113,10 @@ export default class TestUI {
     }
 
     newTestClick(event) {
+        this.wordsContainer.reset();
         this.toggleTestResults(false);
 
+        this.wordsInputField.element.val('');
         this.wordsInputField.element.focus();
     }
 }
