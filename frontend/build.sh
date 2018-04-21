@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+npm install
+
 mkdir -p ./build/
 cp ./app/*.html ./build/
 cp ./app/*.css ./build/
