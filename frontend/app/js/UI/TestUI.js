@@ -39,6 +39,10 @@ export default class TestUI {
         return testDurationInMilliseconds / 1000 / 60;
     }
 
+    getTotalDurationInMinutes() {
+        return this.testDurationInSeconds / 60;
+    }
+
     testInputKeypress(event) {
         if (!this.isTestStarted) {
             this.testStarted();

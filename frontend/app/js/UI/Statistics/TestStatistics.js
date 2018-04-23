@@ -26,10 +26,21 @@ export default class TestStatistics {
         this.refreshStatisticsIntervalHandle = 0;
     }
 
-    setCpm(value) {
-        this.cpm = value;
-        this.elementCpm.text(Math.trunc(this.cpm));
-        this.speedometer.setValue(this.cpm);
+    setCpm(value, onlyRefreshUI) {
+        if (!onlyRefreshUI) {
+            this.cpm = value;
+        }
+
+        this.elementCpm.text(Math.trunc(value));
+        this.speedometer.setValue(value);
+    }
+
+    setWpm(value, onlyRefreshUI) {
+        if (!onlyRefreshUI) {
+            this.wpm = value;
+        }
+
+        this.elementWpm.text(Math.trunc(value));
     }
 
     countCharacter(isCorrect) {
@@ -37,9 +48,9 @@ export default class TestStatistics {
             const testDurationInMinutes = this.testUI.getTestDurationInMinutes();
 
             if (testDurationInMinutes > 0) {
-                this.setCpm(++this.correctCharactersCount / testDurationInMinutes);
+                this.setCpm(++this.correctCharactersCount / testDurationInMinutes, true);
 
-                console.log('cpm = ' + this.cpm);
+                // console.log('cpm = ' + this.cpm);
             }
         } else {
             this.elementTyposCount.text(++this.typosCount);
@@ -52,33 +63,51 @@ export default class TestStatistics {
         }
     }
 
-    countWord(isCorrect, wordLength) {
+    countWord() {
         const testDurationInMinutes = this.testUI.getTestDurationInMinutes();
 
         if (testDurationInMinutes > 0) {
-            if (isCorrect) {
-                this.correctWordsCount++;
-                this.correctUniqueCharactersCount += (wordLength + 1); // we count space between words as well
-            }
+            this.countStatistics();
 
-            this.wpm = this.correctWordsCount / testDurationInMinutes;
-            this.elementWpm.text(Math.trunc(this.wpm));
-
-            this.setCpm(this.correctUniqueCharactersCount / testDurationInMinutes);
-
-            console.log('cpm corrected to ' + this.cpm);
+            this.setCpm(this.correctUniqueCharactersCount / testDurationInMinutes, true);
+            this.setWpm(this.correctWordsCount / testDurationInMinutes, true);
         }
     }
 
+    countStatistics() {
+        const correctWords = this.testUI.wordsContainer.element.find('.task-word-correct');
+        this.correctWordsCount = correctWords.length;
+
+        let charCount = 0;
+        for (let word of correctWords) {
+            // we count space between words as well
+            charCount += ($(word).data('value').length + 1);
+        }
+
+        // TODO count chars for unfinished words
+
+        this.correctUniqueCharactersCount = charCount;
+    }
+
     refreshStatisticsInterval() {
-        this.setCpm(this.correctCharactersCount / this.testUI.getTestDurationInMinutes());
+        this.setCpm(this.correctCharactersCount / this.testUI.getTestDurationInMinutes(), true);
+        this.setWpm(this.correctWordsCount / this.testUI.getTestDurationInMinutes(), true);
         // console.log('cpm on timer = ' + this.cpm);
     }
 
     stopRefreshingStatistics() {
+        this.finalizeStatistics();
+
         if (this.refreshStatisticsIntervalHandle !== 0) {
             clearInterval(this.refreshStatisticsIntervalHandle);
             this.refreshStatisticsIntervalHandle = 0;
         }
+    }
+
+    finalizeStatistics() {
+        this.countStatistics();
+
+        this.setCpm(this.correctUniqueCharactersCount / this.testUI.getTotalDurationInMinutes(), false);
+        this.setWpm(this.correctWordsCount / this.testUI.getTotalDurationInMinutes(), false);
     }
 }

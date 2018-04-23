@@ -42,7 +42,10 @@ export default class WordsContainer {
 
     populate() {
         for (let i = 0; i < this.wordsCount; i++) {
-            let wordElement = this.createWordElement(Words[Math.floor(Math.random() * Words.length)]);
+            const value = Words[Math.floor(Math.random() * Words.length)];
+
+            const wordElement = this.createWordElement(value);
+            wordElement.data('value', value);
 
             wordElement.appendTo(this.element);
         }
@@ -51,23 +54,26 @@ export default class WordsContainer {
     }
 
     initCurrentWord() {
-        if (this.currentWordIndex === 0) {
-            this.currentWordElement = this.element.children().first();
-        } else {
-            this.currentWordElement.removeClass('task-word-current');
-            this.currentWordElement = this.currentWordElement.next();
+        if (this.currentWordElement !== undefined) {
+            this.currentWordElement.removeClass('task-word-current underline');
         }
+        this.currentWordElement = $(this.element.children().get(this.currentWordIndex));
 
-        this.currentWord = this.currentWordElement.text();
-        this.currentWordElement.addClass('task-word-current');
+        // this.currentWord = this.currentWordElement.text().replace(String.fromCharCode(0x200B), '');
+        this.currentWord = this.currentWordElement.data('value');
+        this.currentWordElement.removeClass('task-word-incorrect').removeClass('task-word-correct').addClass('task-word-current');
 
-        this.initCharElementsForTheCurrentWord();
+        if (this.currentWordElement.find('.task-word-typed-char').length === 0) {
+            this.initCharElementsForTheCurrentWord();
+        }
+        this.currentWordCharElements = this.currentWordElement.children('.task-word-typed-char');
+
+        this.setCaretPosition(0, 0);
     }
 
     setToFirstWord() {
         this.currentWordIndex = 0;
         this.initCurrentWord();
-        this.setCaretPosition(0, 0);
 
         return this;
     }
@@ -75,6 +81,18 @@ export default class WordsContainer {
     nextWord() {
         this.currentWordIndex++;
         this.initCurrentWord();
+
+        return this;
+    }
+
+    previousWord() {
+        if (this.currentWordIndex > 0) {
+            this.currentWordIndex--;
+            this.initCurrentWord();
+        }
+
+        let value = this.currentWordElement.data('user-input');
+        this.testui.wordsInputField.element.val(value);
 
         return this;
     }
@@ -87,8 +105,6 @@ export default class WordsContainer {
 
             letterElement.appendTo(this.currentWordElement);
         }
-
-        this.currentWordCharElements = this.currentWordElement.children('.task-word-typed-char');
     }
 
     refreshCurrentWordCharacterElements(value) {
@@ -112,6 +128,7 @@ export default class WordsContainer {
         // console.log(`slice count = ${this.currentWord.length - value.length}, result = ${this.currentWord.slice(value.length)}`);
 
         let plainText = this.currentWord.slice(value.length);
+        // some text needs to be presented otherwise elements will reposition themselves
         if (plainText === '') plainText = '\u200B';
 
         this.currentWordElement.find('.plain-word').text(plainText);
@@ -139,9 +156,11 @@ export default class WordsContainer {
     //     charElement.appendTo(this.currentWordElement);
     // }
 
-    // update words/chars HTML elements UI
+    // update words/chars HTML elements, correct statistics
     testInputInput(event) {
         let value = this.testui.wordsInputField.element.val();
+
+        this.currentWordElement.data('user-input', value);
 
         // console.log(`input event, current word = ${this.currentWord}, input value = ${value}`);
 
@@ -150,12 +169,12 @@ export default class WordsContainer {
 
             let isCorrectWord = value === this.currentWord;
             if (isCorrectWord) {
-                this.currentWordElement.addClass('task-word-correct');
+                this.currentWordElement.removeClass('task-word-incorrect').addClass('task-word-correct');
             } else {
-                this.currentWordElement.addClass('task-word-incorrect');
+                this.currentWordElement.removeClass('task-word-correct').addClass('task-word-incorrect');
             }
 
-            this.testui.statistics.countWord(isCorrectWord, this.currentWord.length);
+            this.testui.statistics.countWord();
             this.nextWord();
             this.testui.wordsInputField.element.val('');
         } else {
@@ -188,13 +207,20 @@ export default class WordsContainer {
         let caretPosition = $(this.testui.wordsInputField.element).caret('pos');
         let textLength = this.testui.wordsInputField.element.val().length;
 
-        if (event.keyCode === 37) { // left arrow
+        if (event.keyCode === 8) { // backspace
+            if (textLength === 0) {
+                // console.log('back to the previous word');
+                this.previousWord();
+            }
+        } else if (event.keyCode === 37) { // left arrow
+            // ctrl + left arrow
             if (event.ctrlKey) {
                 caretPosition = 0;
             } else {
                 caretPosition = Math.max(0, caretPosition - 1);
             }
         } else if (event.keyCode === 39) { // right arrow
+            // ctrl + right arrow
             if (event.ctrlKey) {
                 caretPosition = textLength;
             } else {
@@ -225,9 +251,11 @@ export default class WordsContainer {
 
     setCaretPosition(value, textLength) {
         if (value === textLength) {
+            // set caret to the next char being typed
             this.currentWordElement.addClass('underline');
             this.currentWordCharElements.removeClass('underline');
         } else {
+            // caret was shifted to the left
             this.currentWordElement.removeClass('underline');
             this.currentWordCharElements.removeClass('underline');
             $(this.currentWordCharElements[value]).addClass('underline');

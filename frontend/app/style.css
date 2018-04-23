@@ -62,10 +62,6 @@ h1 {
     font-size: 22px;
 }
 
-.task-word-current {
-    background: #ddd;
-}
-
 .task-word-correct {
     color: white;
     background: #96d059a8;
@@ -74,6 +70,11 @@ h1 {
 .task-word-incorrect {
     color: white;
     background: #ff000057;
+}
+
+.task-word-current {
+    color: black;
+    background: #ddd;
 }
 
 .task-word-current::first-letter {
