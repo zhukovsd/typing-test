@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-npm install
+# npm install
 
 mkdir -p ./build/
 cp ./app/*.html ./build/
