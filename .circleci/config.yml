@@ -34,7 +34,9 @@ jobs:
 
           #  mvn package --offline
 
-          mvn package --offline
+          command: |
+            mv /frontend/node_modules ./frontend
+            mvn package --offline
 
 #      - save_cache:
 #          paths:
