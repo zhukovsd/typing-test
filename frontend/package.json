@@ -1,8 +1,8 @@
 {
-  "name": "spring-npm-frontend-boilerplate",
+  "name": "typing-test",
   "version": "0.0.1",
   "author": "zhukovsd",
-  "repository": "zhukovsd/spring-npm-frontend-boilerplate",
+  "repository": "zhukovsd/typing-test",
   "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.24.1",

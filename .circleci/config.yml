@@ -6,7 +6,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
+      # - image: circleci/openjdk:8-jdk
+      - image: zhukovsd/typing-test-build-env:latest
 
     working_directory: ~/repo
 
@@ -25,13 +26,15 @@ jobs:
 #          - v1-dependencies-
 
       - run:
-          command: |
-            echo Installing node and npm...
-            curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-            sudo apt-get install nodejs
-            sudo apt-get install npm
+          #command: |
+          #  echo Installing node and npm...
+          #  curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+          #  sudo apt-get install nodejs
+          #  sudo apt-get install npm
 
-            mvn package
+          #  mvn package --offline
+
+          mvn package --offline
 
 #      - save_cache:
 #          paths:
