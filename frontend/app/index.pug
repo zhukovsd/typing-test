@@ -37,21 +37,22 @@ html(lang="en")
 
             div.test-ui
                 div.words-container
-                    - var n = 0;
-                    while n < 0
-                        - var text = "Word" + n;
+                    div.scrollable-words-container
+                        - var n = 0;
+                        while n < 0
+                            - var text = "Word" + n;
 
-                        if n < 23
-                            if (Math.random() < 0.2)
-                                div.task-word.task-word-incorrect= text
+                            if n < 23
+                                if (Math.random() < 0.2)
+                                    div.task-word.task-word-incorrect= text
+                                else
+                                    div.task-word.task-word-correct= text
+                            else if n === 23
+                                div.task-word.task-word-current= text
                             else
-                                div.task-word.task-word-correct= text
-                        else if n === 23
-                            div.task-word.task-word-current= text
-                        else
-                            div.task-word= text
+                                div.task-word= text
 
-                        - n++;
+                            - n++;
 
                 div.test-results-container(style="display: none;")
                     div.test-results

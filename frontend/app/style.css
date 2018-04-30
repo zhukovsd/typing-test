@@ -42,12 +42,17 @@ h1 {
 }
 
 .words-container {
-    height: 196px;
-    margin: 10px;
+    height: 216px;
+    /*margin: 10px;*/
 
     text-align: center;
     overflow: hidden;
     flex: 1 1 auto;
+}
+
+.scrollable-words-container {
+    position: relative;
+    margin: 10px;
 }
 
 .task-word {

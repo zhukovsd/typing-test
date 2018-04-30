@@ -8,9 +8,13 @@ export default class WordsContainer {
         this.element = element;
         this.wordsCount = wordsCount;
 
+        this.scrollableContainer =  this.element.find('.scrollable-words-container');
+
         this.currentWordIndex = -1;
         this.currentWordElement = undefined;
         this.currentWord = '';
+
+        this._currentLineIndex = 0;
 
         // this.testui.wordsInputField.element.keypress(event => {
         //     this.testInputKeypress(event);
@@ -47,17 +51,23 @@ export default class WordsContainer {
             const wordElement = this.createWordElement(value);
             wordElement.data('value', value);
 
-            wordElement.appendTo(this.element);
+            wordElement.appendTo(this.scrollableContainer);
         }
 
         return this;
     }
 
     initCurrentWord() {
+        let isFirstWord = true;
+        let previousWordPositionTop = 0;
+
         if (this.currentWordElement !== undefined) {
+            isFirstWord = false;
             this.currentWordElement.removeClass('task-word-current underline');
+
+            previousWordPositionTop = this.currentWordElement.offset().top;
         }
-        this.currentWordElement = $(this.element.children().get(this.currentWordIndex));
+        this.currentWordElement = $(this.scrollableContainer.children().get(this.currentWordIndex));
 
         // this.currentWord = this.currentWordElement.text().replace(String.fromCharCode(0x200B), '');
         this.currentWord = this.currentWordElement.data('value');
@@ -69,6 +79,17 @@ export default class WordsContainer {
         this.currentWordCharElements = this.currentWordElement.children('.task-word-typed-char');
 
         this.setCaretPosition(0, 0);
+
+        if (!isFirstWord) {
+            const currentWordPositionTop = this.currentWordElement.offset().top;
+
+            if (currentWordPositionTop > previousWordPositionTop) {
+                // alert('next line!');
+                this.currentLineIndex++;
+            } else if (currentWordPositionTop < previousWordPositionTop) {
+                // alert('previous line!');
+            }
+        }
     }
 
     setToFirstWord() {
@@ -148,6 +169,29 @@ export default class WordsContainer {
                 e.hide();
             }
         });
+    }
+
+    get currentLineIndex() {
+        return this._currentLineIndex;
+    }
+
+    set currentLineIndex(value) {
+        const prevValue = this._currentLineIndex;
+
+        if (prevValue !== value) {
+            this._currentLineIndex = value;
+
+            if ((value > prevValue) && (value >= 3)) {
+                // alert('hi, ' + value);
+
+                let scrollTo = 39;
+
+                // first line had additional margin
+                // if (value === 2) scrollTo += 10;
+
+                this.scrollableContainer.animate({top: `-=${scrollTo}px`}, 200);
+            }
+        }
     }
 
     // createCharElement(char, isCorrect) {
@@ -263,12 +307,13 @@ export default class WordsContainer {
     }
 
     clear() {
-        this.element.find('.task-word').remove();
+        this.scrollableContainer.find('.task-word').remove();
 
         return this;
     }
 
     reset() {
+        this.currentLineIndex = 0;
         return this.clear().populate().setToFirstWord();
     }
 }

@@ -8,7 +8,7 @@ import $ from 'jquery';
 import TestUI from './UI/TestUI';
 
 $(document).ready(() => {
-    const testUI = new TestUI(10, 500);
+    const testUI = new TestUI(5, 500);
 
     // alert('ready');
 });
