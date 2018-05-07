@@ -38,6 +38,13 @@ jobs:
             mv /frontend/node_modules ./frontend
             mvn package --offline
 
+      - setup_remote_docker
+
+      - run:
+          name: Build typing-test Docker Image
+          command: |
+            docker image build -t zhukovsd/typing-test .
+
 #      - save_cache:
 #          paths:
 #            - ~/.m2

@@ -88,6 +88,7 @@ export default class WordsContainer {
                 this.currentLineIndex++;
             } else if (currentWordPositionTop < previousWordPositionTop) {
                 // alert('previous line!');
+                this.currentLineIndex--;
             }
         }
     }
@@ -181,15 +182,14 @@ export default class WordsContainer {
         if (prevValue !== value) {
             this._currentLineIndex = value;
 
+            let scrollTo = 39;
+
             if ((value > prevValue) && (value >= 3)) {
-                // alert('hi, ' + value);
-
-                let scrollTo = 39;
-
-                // first line had additional margin
-                // if (value === 2) scrollTo += 10;
-
+                //scroll down
                 this.scrollableContainer.animate({top: `-=${scrollTo}px`}, 200);
+            } else if ((value < prevValue) && (value >=2)) {
+                // scroll up
+                this.scrollableContainer.animate({top: `+=${scrollTo}px`}, 200);
             }
         }
     }
