@@ -43,7 +43,9 @@ jobs:
       - run:
           name: Build typing-test Docker Image
           command: |
-            docker image build -t zhukovsd/typing-test .
+            docker image build -t zhukovsd/typing-test:latest .
+            docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+            docker image push zhukovsd/typing-test:latest
 
 #      - save_cache:
 #          paths:
