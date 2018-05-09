@@ -51,11 +51,11 @@ jobs:
       - run:
           name: Deploy to production Swarm
           command: |
-            openssl aes-256-cbc -d -in ./production-certs/ca.pem.enc -k $ENCRYPTION_KEY -out ca.pem
-            openssl aes-256-cbc -d -in ./production-certs/cert.pem.enc -k $ENCRYPTION_KEY -out cert.pem
-            openssl aes-256-cbc -d -in ./production-certs/key.pem.enc -k $ENCRYPTION_KEY -out key.pem
+            openssl aes-256-cbc -d -in production-certs/ca.pem.enc -k $ENCRYPTION_KEY -out ca.pem
+            openssl aes-256-cbc -d -in production-certs/cert.pem.enc -k $ENCRYPTION_KEY -out cert.pem
+            openssl aes-256-cbc -d -in production-certs/key.pem.enc -k $ENCRYPTION_KEY -out key.pem
 
-            docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 swarm deploy -c stack.yml typing-test
+            docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 stack deploy -c stack.yml --with-registry-auth typing-test
 
 #      - save_cache:
 #          paths:
