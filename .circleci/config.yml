@@ -34,6 +34,7 @@ jobs:
 
           #  mvn package --offline
 
+          name: Build typing-test war
           command: |
             mv /frontend/node_modules ./frontend
             mvn package --offline
@@ -41,11 +42,20 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Build typing-test Docker Image
+          name: Build and push typing-test Docker image
           command: |
             docker image build -t zhukovsd/typing-test:latest .
             docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
             docker image push zhukovsd/typing-test:latest
+
+      - run:
+          name: Deploy to production Swarm
+          command: |
+            openssl aes-256-cbc -d -in ./production-certs/ca.pem.enc -k $ENCRYPTION_KEY -out ca.pem
+            openssl aes-256-cbc -d -in ./production-certs/cert.pem.enc -k $ENCRYPTION_KEY -out cert.pem
+            openssl aes-256-cbc -d -in ./production-certs/key.pem.enc -k $ENCRYPTION_KEY -out key.pem
+
+            docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 swarm deploy -c stack.yml typing-test
 
 #      - save_cache:
 #          paths:
