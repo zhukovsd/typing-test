@@ -2,6 +2,11 @@
 
 # npm install
 
+if [ ${CI} = "true" ]; then
+   echo "executing inject-commit-data-into-index-pug.sh"
+   sh ./inject-commit-data-into-index-pug.sh
+fi
+
 mkdir -p ./build/
 cp ./app/*.html ./build/
 cp ./app/*.css ./build/
