@@ -2,7 +2,7 @@
 
 # npm install
 
-if [ ${CI} = "true" ]; then
+if [ "${CI}" = "true" ]; then
    echo "executing inject-commit-data-into-index-pug.sh"
    sh ./inject-commit-data-into-index-pug.sh
 fi

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Words from '../WordsDictionary';
+import WordsDictionary from '../WordsDictionary';
 import {} from 'jquery.caret';
 
 export default class WordsContainer {
@@ -45,8 +45,12 @@ export default class WordsContainer {
     }
 
     populate() {
+        // alert(JSON.stringify(Words));
+
+        const words = WordsDictionary.asArray();
+
         for (let i = 0; i < this.wordsCount; i++) {
-            const value = Words[Math.floor(Math.random() * Words.length)];
+            const value = words[Math.floor(Math.random() * words.length)];
 
             const wordElement = this.createWordElement(value);
             wordElement.data('value', value);

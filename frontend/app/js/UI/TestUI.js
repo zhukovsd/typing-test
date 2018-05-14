@@ -32,6 +32,8 @@ export default class TestUI {
         this.newTestElement.click(event => {
             this.newTestClick(event);
         });
+
+        this.wordsInputField.element.focus();
     }
 
     getTestDurationInMinutes() {
