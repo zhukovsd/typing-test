@@ -1,12 +1,12 @@
 defaults: &defaults
   working_directory: ~/repo
+  docker:
+    - image: zhukovsd/typing-test-build-env:latest
 
 version: 2
 jobs:
   build:
     <<: *defaults
-    docker:
-      - image: zhukovsd/typing-test-build-env:latest
 
     # working_directory: ~/repo
 
@@ -35,8 +35,6 @@ jobs:
 
   deploy:
     <<: *defaults
-    docker:
-      - image: circleci/openjdk:8-jdk
 
     steps:
       - attach_workspace:
@@ -61,7 +59,9 @@ jobs:
             openssl aes-256-cbc -d -in production-certs/cert.pem.enc -k $ENCRYPTION_KEY -out cert.pem
             openssl aes-256-cbc -d -in production-certs/key.pem.enc -k $ENCRYPTION_KEY -out key.pem
 
+            export TYPING_TEST_IMAGE_TAG=$CIRCLE_BRANCH
             envsubst < "stack.template.yml" > "stack.yml"
+
             docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 stack deploy -c stack.yml --with-registry-auth typing-test
 
 workflows:
