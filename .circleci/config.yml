@@ -28,12 +28,12 @@ jobs:
           # Must be relative path from root
           paths:
             - Dockerfile
-            - stack.yml
+            - stack.template.yml
             - production-certs/*
             - target/*
             - ROOT.xml
 
-  deploy-production:
+  deploy:
     <<: *defaults
     docker:
       - image: circleci/openjdk:8-jdk
@@ -48,17 +48,20 @@ jobs:
       - run:
           name: Build and push typing-test Docker image
           command: |
-            docker image build -t zhukovsd/typing-test:latest .
+            export TYPING_TEST_IMAGE_TAG=$CIRCLE_BRANCH
+
+            docker image build -t zhukovsd/typing-test:$TYPING_TEST_IMAGE_TAG .
             docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-            docker image push zhukovsd/typing-test:latest
+            docker image push zhukovsd/typing-test:$TYPING_TEST_IMAGE_TAG
 
       - run:
-          name: Deploy to production Swarm
+          name: Deploy to Docker Swarm
           command: |
             openssl aes-256-cbc -d -in production-certs/ca.pem.enc -k $ENCRYPTION_KEY -out ca.pem
             openssl aes-256-cbc -d -in production-certs/cert.pem.enc -k $ENCRYPTION_KEY -out cert.pem
             openssl aes-256-cbc -d -in production-certs/key.pem.enc -k $ENCRYPTION_KEY -out key.pem
 
+            envsubst < "stack.template.yml" > "stack.yml"
             docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 stack deploy -c stack.yml --with-registry-auth typing-test
 
 workflows:
@@ -66,7 +69,7 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - deploy-production:
+      - deploy:
           requires:
             - build
           filters:

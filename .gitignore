@@ -98,3 +98,4 @@ jspm_packages
 ca.pem
 cert.pem
 key.pem
+stack.yml
