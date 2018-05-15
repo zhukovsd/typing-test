@@ -1,0 +1,3 @@
+# Don't let git change default linebreaks
+*.circleci/config.yml text eol=lf
+.gitattributes text eol=lf

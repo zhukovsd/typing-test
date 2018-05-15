@@ -1,15 +1,14 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
+defaults: &defaults
+  working_directory: ~/repo
+
 version: 2
 jobs:
   build:
+    <<: *defaults
     docker:
-      # - image: circleci/openjdk:8-jdk
       - image: zhukovsd/typing-test-build-env:latest
 
-    working_directory: ~/repo
+    # working_directory: ~/repo
 
     environment:
       # Customize the JVM maximum heap limit
@@ -18,26 +17,31 @@ jobs:
     steps:
       - checkout
 
-#      # Download and cache dependencies
-#      - restore_cache:
-#          keys:
-#          - v1-dependencies-{{ checksum "pom.xml" }}
-#          # fallback to using the latest cache if no exact match is found
-#          - v1-dependencies-
-
       - run:
-          #command: |
-          #  echo Installing node and npm...
-          #  curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-          #  sudo apt-get install nodejs
-          #  sudo apt-get install npm
-
-          #  mvn package --offline
-
           name: Build typing-test war
           command: |
             mv /frontend/node_modules ./frontend
             mvn package --offline
+
+      - persist_to_workspace:
+          root: .
+          # Must be relative path from root
+          paths:
+            - Dockerfile
+            - stack.yml
+            - production-certs/*
+            - target/*
+            - ROOT.xml
+
+  deploy-production:
+    <<: *defaults
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
 
       - setup_remote_docker
 
@@ -57,10 +61,11 @@ jobs:
 
             docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 stack deploy -c stack.yml --with-registry-auth typing-test
 
-#      - save_cache:
-#          paths:
-#            - ~/.m2
-#          key: v1-dependencies-{{ checksum "pom.xml" }}
-
-      # run tests!
-#      - run: mvn integration-test
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-production:
+          requires:
+            - build
