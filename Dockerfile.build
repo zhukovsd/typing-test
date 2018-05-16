@@ -21,7 +21,6 @@ WORKDIR /
 
 # run "package" to implicitly install all dependencies (including plugins)
 RUN sudo chmod -R 777 /target
-RUN export CI=false
 RUN mvn package
 
 RUN sudo rm -rf /target
