@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# set current directory to ./frontend explicitly, because this script gets executed from a root project dir
+cd "${0%/*}"
+
 BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
 COMMIT_HASH=`git rev-parse --verify HEAD | cut -c1-6`
 DATETIME=$(date)
