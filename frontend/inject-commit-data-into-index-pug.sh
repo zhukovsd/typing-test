@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Running inject-commit-data-into-index-pug.sh..."
+
 # set current directory to ./frontend explicitly, because this script gets executed from a root project dir
 cd "${0%/*}"
 

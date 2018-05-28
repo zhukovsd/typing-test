@@ -20,6 +20,7 @@ jobs:
       - run:
           name: Build typing-test war
           command: |
+            sh ./frontend/inject-commit-data-into-index-pug.sh
             mv /frontend/node_modules ./frontend
             mvn package --offline
 
