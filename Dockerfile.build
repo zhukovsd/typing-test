@@ -20,6 +20,7 @@ RUN sudo chmod 777 /usr/lib/node_modules && sudo chmod -R 777 /frontend && npm i
 WORKDIR /
 
 # run "package" to implicitly install all dependencies (including plugins)
+RUN sudo mkdir -p /target
 RUN sudo chmod -R 777 /target
 RUN mvn package
 
