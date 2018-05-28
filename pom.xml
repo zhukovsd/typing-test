@@ -161,8 +161,8 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>sh</executable>
-                            <commandlineArgs>${basedir}/frontend/build.sh</commandlineArgs>
+                            <executable>npm</executable>
+                            <commandlineArgs>run build-dev</commandlineArgs>
                             <workingDirectory>${basedir}/frontend</workingDirectory>
                         </configuration>
                     </execution>
