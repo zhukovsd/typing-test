@@ -33,6 +33,7 @@ jobs:
             - production-certs/*
             - target/*
             - ROOT.xml
+            - server.xml
 
   deploy:
     <<: *defaults
