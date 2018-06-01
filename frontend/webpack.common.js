@@ -1,19 +1,34 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: './app/js/app.js',
+  entry: {
+    bundle: './app/js/app.js'
+  },
   output: {
   	path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
+    // filename: 'bundle.js'
+    filename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].js'
+    // '[name].[chunkhash].js'
   },
 
   plugins: [
+    new CleanWebpackPlugin(['build/*']),
+
     // bundle CSS together and emit the result into "style.css" file
     new MiniCssExtractPlugin({
-      filename: "style.css"
+      filename: process.env.NODE_ENV === 'production' ? 'style.[contenthash].css' : 'style.css'
+    }),
+
+    new HtmlWebpackPlugin({
+      //   // template: 'build/index.html',
+      //   template: 'out.html',
+      template: 'app/index.pug',
+      inject: 'head'
     })
   ],
 
@@ -30,16 +45,26 @@ module.exports = {
       },
       {
         // pug templates to HTML
+        // use: [
+        //   {
+        //     // emit HTML files to build folder
+        //     loader: 'file-loader',
+        //     options: {
+        //       // name: '[name].html'
+        //       name: 'out.html'
+        //     }
+        //   },
+        //   {
+        //     loader: 'pug-html-loader',
+        //     options: {
+        //       // pretty output only for dev
+        //       pretty: process.env.NODE_ENV !== 'production'
+        //     }
+        //   }
+        // ],
         use: [
           {
-            // emit HTML files to build folder
-            loader: 'file-loader',
-            options: {
-              name: '[name].html'
-            }
-          },
-          {
-            loader: 'pug-html-loader',
+            loader: 'pug-loader',
             options: {
               // pretty output only for dev
               pretty: process.env.NODE_ENV !== 'production'
