@@ -28,7 +28,14 @@ module.exports = {
       //   // template: 'build/index.html',
       //   template: 'out.html',
       template: 'app/index.pug',
-      inject: 'head'
+      inject: 'head',
+
+      minify: {
+        // remove HTML comments on production
+        removeComments: process.env.NODE_ENV === 'production',
+        // don't remove HTML comment with build info
+        ignoreCustomComments: [ /^.*Built from.*$/ ]
+      }
     })
   ],
 
