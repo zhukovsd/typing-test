@@ -1,4 +1,4 @@
-FROM tomcat:7.0.86-jre8
+FROM tomcat:8.0.52-jre8
 
 COPY ROOT.xml /usr/local/tomcat/conf/Catalina/localhost/ROOT.xml
 COPY server.xml /usr/local/tomcat/conf/server.xml
