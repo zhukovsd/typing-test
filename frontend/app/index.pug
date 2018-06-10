@@ -72,7 +72,7 @@ html(lang="en")
                     div.test-results
                         | You type faster than
                         +space
-                        span#test-results-value-percentage 0
+                        span#test-results-value-percentage 0.00
                         | % of other players!
 
                     +speedometer
@@ -93,10 +93,10 @@ html(lang="en")
                 +speedometer
 
                 div.test-stats-footer
-                    div.test-stats-value-description(title="test") CPM
+                    div.test-stats-value-description.dashed-underline(title="Characters per minute") CPM
                     div.test-stats-value#test-stats-value-cpm –
 
-                    div.test-stats-value-description WPM
+                    div.test-stats-value-description.dashed-underline(title="Words per minute") WPM
                     div.test-stats-value#test-stats-value-wpm –
 
                     div.test-stats-value-description(style="margin-right: 0;") Typos

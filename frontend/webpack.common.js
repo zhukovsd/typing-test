@@ -12,7 +12,7 @@ module.exports = {
   output: {
   	path: path.resolve(__dirname, 'build'),
     // filename: 'bundle.js'
-    filename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].js'
+    filename: process.env.NODE_ENV === 'production' ? '[name].[contenthash].js' : '[name].js'
     // '[name].[chunkhash].js'
   },
 

@@ -43,6 +43,11 @@ export default class TestStatistics {
         this.elementWpm.text(Math.trunc(value));
     }
 
+    setTyposCount(value) {
+        this.typosCount = value;
+        this.elementTyposCount.text(this.typosCount);
+    }
+
     countCharacter(isCorrect) {
         if (isCorrect) {
             const testDurationInMinutes = this.testUI.getTestDurationInMinutes();
@@ -53,7 +58,7 @@ export default class TestStatistics {
                 // console.log('cpm = ' + this.cpm);
             }
         } else {
-            this.elementTyposCount.text(++this.typosCount);
+            this.setTyposCount(this.typosCount + 1);
         }
 
         if (this.refreshStatisticsIntervalHandle === 0) {
@@ -109,5 +114,11 @@ export default class TestStatistics {
 
         this.setCpm(this.correctUniqueCharactersCount / this.testUI.getTotalDurationInMinutes(), false);
         this.setWpm(this.correctWordsCount / this.testUI.getTotalDurationInMinutes(), false);
+    }
+
+    reset() {
+        this.setCpm(0, false);
+        this.setWpm(0, false);
+        this.setTyposCount(0);
     }
 }

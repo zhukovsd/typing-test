@@ -12,6 +12,7 @@ export default class TestUI {
         this.testDurationInSeconds = testDurationInSeconds;
         this.testTimerElement = $('.test-timer');
         this.newTestElement = $('.new-test');
+        this.restartElement = $('.restart');
 
         this.wordsInputField = new WordsInputField($('.test-ui-input'));
         this.wordsContainer = new WordsContainer(this, $('.words-container'), wordsCount).populate().setToFirstWord();
@@ -30,7 +31,11 @@ export default class TestUI {
         });
 
         this.newTestElement.click(event => {
-            this.newTestClick(event);
+            this.newTest();
+        });
+
+        this.restartElement.click(event => {
+            this.restart(event);
         });
 
         this.wordsInputField.element.focus();
@@ -67,7 +72,7 @@ export default class TestUI {
         this.testTimerElement.text(remainingTimeString);
 
         if (this.remainingSeconds === 0) {
-            this.testFinished();
+            this.testFinished(true);
         }
     }
 
@@ -82,7 +87,7 @@ export default class TestUI {
         this.toggleTestResults(false);
     }
 
-    testFinished() {
+    testFinished(submitResults) {
         this.isTestStarted = false;
         if (this.testIntervalHandle !== 0) {
             clearInterval(this.testIntervalHandle);
@@ -93,13 +98,14 @@ export default class TestUI {
 
         this.results.elementCpm.text(Math.trunc(this.statistics.cpm));
         this.results.elementWpm.text(Math.trunc(this.statistics.wpm));
-        this.results.speedometer.setValue(67.89, 3000, value => {
-            this.results.elementPercentage.text(value.toFixed(2));
-        });
+        // this.results.speedometer.setValue(67.89, 3000, value => {
+        //     this.results.elementPercentage.text(value.toFixed(2));
+        // });
 
-        this.toggleTestResults(true);
-
-        // console.log('finished');
+        if (submitResults) {
+            this.toggleTestResults(true);
+            this.submitResults();
+        }
     }
 
     toggleTestResults(show) {
@@ -118,11 +124,41 @@ export default class TestUI {
         }
     }
 
-    newTestClick(event) {
+    submitResults() {
+        $.ajax({
+            type: 'get',
+            url: '/rest/getPlacement',
+            data:
+                {
+                    cpm: Math.trunc(this.statistics.cpm),
+                    typosCount: this.statistics.typosCount
+                },
+            success: response => {
+                this.results.speedometer.setValue(parseFloat(response.percentage), 2500, value => {
+                    this.results.elementPercentage.text(value.toFixed(2));
+                });
+            },
+            error: (xhr, textStatus, errorThrown) => {
+
+            }
+        });
+    }
+
+    newTest() {
+        this.testTimerElement.text('1:00');
+        this.results.speedometer.setValue(0, 0);
+        this.results.elementPercentage.text('0.00');
+
         this.wordsContainer.reset();
+        this.statistics.reset();
         this.toggleTestResults(false);
 
         this.wordsInputField.element.val('');
         this.wordsInputField.element.focus();
+    }
+
+    restart() {
+        this.testFinished(false);
+        this.newTest();
     }
 }

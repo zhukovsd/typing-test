@@ -205,12 +205,12 @@ h1 {
     padding: 0 5px 0 5px;
 }
 
-.test-stats-value-description {
-    border-bottom: 1px dashed grey;
-}
-
 .test-stats .test-stats-value-description {
     font-family: 'Roboto Mono', monospace;
+}
+
+.test-stats .test-stats-value-description.dashed-underline {
+    border-bottom: 1px dashed grey;
 }
 
 .test-stats .test-stats-value-description:after {

@@ -16,10 +16,13 @@ open class WebConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
 //        registry?.addResourceHandler("/WEB-INF/pages/**")?.addResourceLocations("/pages/");
 
-        registry.addResourceHandler("/*.html").addResourceLocations("/").setCacheControl(CacheControl.noStore())
+        registry.addResourceHandler("/*.html").addResourceLocations("/")
+                .setCacheControl(CacheControl.noStore())
 
-        registry.addResourceHandler("/*.css").addResourceLocations("/").setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
-        registry.addResourceHandler("/*.js").addResourceLocations("/").setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+        registry.addResourceHandler("/*.css").addResourceLocations("/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+        registry.addResourceHandler("/*.js").addResourceLocations("/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
 
     }
 
