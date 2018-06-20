@@ -1,12 +1,11 @@
-package com.zhukovsd.placement
+package com.zhukovsd.placement.service
 
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
 
-
 @Service
-class Service {
+class EmbeddedDistributionPlacementService : PlacementService {
     private var minCpm: Int
     private var maxCpm: Int
 
@@ -43,7 +42,7 @@ class Service {
 //        println(percentages)
     }
 
-    fun getPercentage(cpm: Int): String {
+    override fun getPercentage(cpm: Int): String {
         if (cpm < minCpm)
             return "0.00"
         else if (cpm > maxCpm)

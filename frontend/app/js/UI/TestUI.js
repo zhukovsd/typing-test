@@ -131,6 +131,7 @@ export default class TestUI {
             data:
                 {
                     cpm: Math.trunc(this.statistics.cpm),
+                    wpm: Math.trunc(this.statistics.wpm),
                     typosCount: this.statistics.typosCount
                 },
             success: response => {
@@ -155,6 +156,8 @@ export default class TestUI {
 
         this.wordsInputField.element.val('');
         this.wordsInputField.element.focus();
+
+        // TODO scroll words container to the top
     }
 
     restart() {
