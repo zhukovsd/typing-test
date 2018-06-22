@@ -66,6 +66,23 @@ jobs:
 
             docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H 88.99.12.213:2376 stack deploy -c stack.yml --with-registry-auth typing-test
 
+  build-dev-image:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+
+      - setup_remote_docker
+
+      - run:
+          name: Build and push typing-test-dev Docker image
+          command: |
+            docker image build -t zhukovsd/typing-test-dev:latest .
+            docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+            docker image push zhukovsd/typing-test-dev:latest
+
 workflows:
   version: 2
   build-deploy:
@@ -77,3 +94,9 @@ workflows:
           filters:
             branches:
               only: production
+      - build-dev-image:
+          requires:
+            - build
+          filters:
+            branches:
+              only: dev
