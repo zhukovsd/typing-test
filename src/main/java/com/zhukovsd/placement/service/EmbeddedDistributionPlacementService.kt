@@ -16,7 +16,7 @@ class EmbeddedDistributionPlacementService : PlacementService {
         val classLoader = javaClass.classLoader
         val file = File(classLoader.getResource("placements.data")!!.file)
 
-        minCpm = 0
+        minCpm = Integer.MAX_VALUE;
         maxCpm = 0
 
         percentages = HashMap()

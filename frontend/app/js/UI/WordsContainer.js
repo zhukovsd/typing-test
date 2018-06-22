@@ -318,6 +318,8 @@ export default class WordsContainer {
 
     reset() {
         this.currentLineIndex = 0;
+        this.scrollableContainer.css('top', 0);
+
         return this.clear().populate().setToFirstWord();
     }
 }
