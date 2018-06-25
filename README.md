@@ -23,7 +23,7 @@ The primary building and dependency management tool is Maven. Is assembles a WAR
 During building, Maven (config - [pom.xml](https://github.com/zhukovsd/typing-test/blob/master/pom.xml)) executes Webpack to build the frontend app by running an [npm script](https://github.com/zhukovsd/typing-test/blob/master/frontend/package.json#L10).
 
 [Webpack config](https://github.com/zhukovsd/typing-test/blob/master/frontend/webpack.common.js) defines a number of steps:
-- Transpile ES6 to ES4 with Babel, combine application code and vendor code to the output bundled Javascript file (minify for the production build, include source maps for the dev build)
+- Transpile ES6 to ES5 with Babel, combine application code and vendor code to the output bundled Javascript file (minify for the production build, include source maps for the dev build)
 - Compile Pug templates to HTML
 - Bundle CSS (minify for the production build, include source maps for the dev build)
 - Enable versioning for JS and CSS assets by calculating output file hashes on each build. Hash changes only when the content of the file changes so that clients can cache web assets
@@ -39,4 +39,4 @@ CI defines multiple steps to build and deploy the project ([ci config](https://g
 - Build and push a Docker image for Tomcat microservice (this microservice runs the compiled Spring app)
 - Refresh production Docker Swarm stack by remote execution of `docker stack deploy`
 
-Log of jobs executed CircleCI - https://circleci.com/gh/zhukovsd/typing-test
+Log of jobs executed on CircleCI - https://circleci.com/gh/zhukovsd/typing-test
