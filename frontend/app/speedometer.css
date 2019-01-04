@@ -6,7 +6,7 @@
     position: relative;
     border-radius: 200px 200px 0 0;
     margin: 20px auto;
-    background-color: #96d059a8;
+    background-color: rgba(150, 208, 89, 0.658);
 }
 
 .speedometer:after {
