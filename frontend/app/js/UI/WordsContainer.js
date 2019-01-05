@@ -255,7 +255,19 @@ export default class WordsContainer {
         const expectedChar = (caretPosition < text.length) ? text.charAt(caretPosition) : ' ';
         // console.log(`pressed = ${event.key}, expected = ${expectedChar}`);
 
-        let isCorrect = event.key === expectedChar;
+        let inputChar;
+        if (event.key) {
+            inputChar = event.key;
+        } else {
+            // workaround for safari event.key==undefined
+            const currentCode = event.which || event.code;
+            inputChar = String.fromCharCode(currentCode);
+        }
+
+        // log.info(`pressed = ${inputChar}, expected = ${expectedChar}`);
+
+        let isCorrect = inputChar === expectedChar;
+
         // if (isCorrect) {
         //      console.log('correct char')
         // } else {
@@ -305,8 +317,6 @@ export default class WordsContainer {
             caretPosition++;
         } else if ((event.keyCode >= 65) && (event.keyCode <= 90)) {
             // safari special case, due to event.key being undefined
-
-            log.info("safari");
             textLength++;
             caretPosition++;
         }
