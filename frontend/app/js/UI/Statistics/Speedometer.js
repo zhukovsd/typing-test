@@ -71,7 +71,7 @@ export default class Speedometer {
 
                 this.currentGearIndex = index;
 
-                console.log('switching gear to ' + this.currentGearIndex);
+                // console.log('switching gear to ' + this.currentGearIndex);
                 this.setSpeedometerNumbers(gear);
 
                 return gear;
@@ -82,7 +82,7 @@ export default class Speedometer {
     setSpeedometerNumbers(gear) {
         const interval = (gear.to - gear.from) / (this.elementsNumbers.length - 1);
 
-        console.log(gear + ', ' + gear.from);
+        // console.log(gear + ', ' + gear.from);
 
         for (let i = 0; i < this.elementsNumbers.length; i++) {
             $(this.elementsNumbers[i]).text(Math.round(gear.from + interval * i));
