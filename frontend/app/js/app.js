@@ -11,7 +11,7 @@ import TestUI from './UI/TestUI';
 import * as log from "loglevel";
 
 $(document).ready(() => {
-    log.setLevel('trace');
+    log.setLevel(LOGGING_LEVEL);
 
     const testUI = new TestUI(60, 500);
 });
