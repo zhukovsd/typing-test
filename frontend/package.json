@@ -27,5 +27,8 @@
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4",
     "webpack-merge": "^4.1.2"
+  },
+  "dependencies": {
+    "loglevel": "^1.6.1"
   }
 }

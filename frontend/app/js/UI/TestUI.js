@@ -1,4 +1,5 @@
 import $ from "jquery";
+import * as log from 'loglevel';
 
 import WordsContainer from "./WordsContainer";
 import WordsInputField from "./WordsInputField";
@@ -22,6 +23,7 @@ export default class TestUI {
 
         this.isTestStarted = false;
         this.testStartTimestamp = null;
+        this.ignoreInput = false;
 
         this.remainingSeconds = 0;
         this.testIntervalHandle = 0;
@@ -51,8 +53,11 @@ export default class TestUI {
     }
 
     testInputKeypress(event) {
-        if (!this.isTestStarted) {
+        // events queue can still emit events after the test was finished so we have to track that
+        if (!this.ignoreInput && !this.isTestStarted) {
             this.testStarted();
+        } else if (this.ignoreInput) {
+            log.info("new test was not started due to ignoreInput flag");
         }
     }
 
@@ -77,6 +82,8 @@ export default class TestUI {
     }
 
     testStarted() {
+        log.trace("test started");
+
         this.isTestStarted = true;
         this.testStartTimestamp = new Date();
 
@@ -88,16 +95,22 @@ export default class TestUI {
     }
 
     testFinished(submitResults) {
+        log.trace("test finished");
+
+        // this.unsetWordsInputFieldEvent();
+        this.ignoreInput = true;
         this.isTestStarted = false;
+
         if (this.testIntervalHandle !== 0) {
             clearInterval(this.testIntervalHandle);
             this.testIntervalHandle = 0;
+
         }
 
         this.statistics.stopRefreshingStatistics();
-
         this.results.elementCpm.text(Math.trunc(this.statistics.cpm));
         this.results.elementWpm.text(Math.trunc(this.statistics.wpm));
+
         // this.results.speedometer.setValue(67.89, 3000, value => {
         //     this.results.elementPercentage.text(value.toFixed(2));
         // });
@@ -110,12 +123,14 @@ export default class TestUI {
 
     toggleTestResults(show) {
         if (show) {
+            // hide test controls, show results
             this.wordsContainer.element.hide();
             this.results.element.show();
 
             this.wordsInputField.element.hide();
             this.newTestElement.show();
         } else {
+            // show test controls, hide results
             this.wordsContainer.element.show();
             this.results.element.hide();
 
@@ -146,6 +161,8 @@ export default class TestUI {
     }
 
     newTest() {
+        this.ignoreInput = false;
+
         this.testTimerElement.text('1:00');
         this.results.speedometer.setValue(0, 0);
         this.results.elementPercentage.text('0.00');

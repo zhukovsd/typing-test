@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import WordsDictionary from '../WordsDictionary';
 import {} from 'jquery.caret';
+import * as log from 'loglevel';
 
 export default class WordsContainer {
     constructor(testui, element, wordsCount) {
@@ -206,6 +207,13 @@ export default class WordsContainer {
 
     // update words/chars HTML elements, correct statistics
     testInputInput(event) {
+        // events queue can still emit events after the test was finished so we have to track that
+        if (this.testui.ignoreInput) {
+            log.info("WordsContainer.testInputInput skipped due to testui.ignoreInput flag");
+
+            return;
+        }
+
         let value = this.testui.wordsInputField.element.val();
 
         this.currentWordElement.data('user-input', value);
@@ -232,6 +240,13 @@ export default class WordsContainer {
 
     // count statistics
     testInputKeypress(event) {
+        // events queue can still emit events after the test was finished so we have to track that
+        if (this.testui.ignoreInput) {
+            log.info("WordsContainer.testInputKeypress skipped due to testui.ignoreInput flag");
+
+            return;
+        }
+
         let text = this.currentWord;
         let caretPosition = $(this.testui.wordsInputField.element).caret('pos');
 
@@ -240,7 +255,19 @@ export default class WordsContainer {
         const expectedChar = (caretPosition < text.length) ? text.charAt(caretPosition) : ' ';
         // console.log(`pressed = ${event.key}, expected = ${expectedChar}`);
 
-        let isCorrect = event.key === expectedChar;
+        let inputChar;
+        if (event.key) {
+            inputChar = event.key;
+        } else {
+            // workaround for safari event.key==undefined
+            const currentCode = event.which || event.code;
+            inputChar = String.fromCharCode(currentCode);
+        }
+
+        // log.info(`pressed = ${inputChar}, expected = ${expectedChar}`);
+
+        let isCorrect = inputChar === expectedChar;
+
         // if (isCorrect) {
         //      console.log('correct char')
         // } else {
@@ -252,6 +279,13 @@ export default class WordsContainer {
 
     // calculate caret position
     testInputKeydown(event) {
+        // events queue can still emit events after the test was finished so we have to track that
+        if (this.testui.ignoreInput) {
+            log.info("WordsContainer.testInputKeydown skipped due to testui.ignoreInput flag");
+
+            return;
+        }
+
         let caretPosition = $(this.testui.wordsInputField.element).caret('pos');
         let textLength = this.testui.wordsInputField.element.val().length;
 
@@ -278,7 +312,11 @@ export default class WordsContainer {
             caretPosition = 0;
         } else if (event.keyCode === 35) { // End
             caretPosition = textLength;
-        } else if (event.key.length === 1) { // a character was typed
+        } else if ((event.key) && (event.key.length === 1)) { // a character was typed
+            textLength++;
+            caretPosition++;
+        } else if ((event.keyCode >= 65) && (event.keyCode <= 90)) {
+            // safari special case, due to event.key being undefined
             textLength++;
             caretPosition++;
         }
