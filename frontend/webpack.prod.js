@@ -1,5 +1,6 @@
 process.env.NODE_ENV = 'production';
 
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
@@ -10,4 +11,10 @@ module.exports = merge(common, {
   // output: {
   //   filename: '[name].[chunkhash].js',
   // }
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'LOGGING_LEVEL': JSON.stringify('silent')
+    })
+  ]
 });
